@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: omnitrace-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_PATH=/app/data/omnitrace.db
+      - LOG_PATH=/app/data/omnitrace_system.log
+    volumes:
+      - omnitrace_data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: omnitrace-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  omnitrace_data:
